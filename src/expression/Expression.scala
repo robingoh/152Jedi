@@ -1,8 +1,11 @@
 package expression
 
+import context.Environment
+import value.Value
+
 /**
   * Created by robingoh on 10/25/17.
   */
-case trait Expression {
+trait Expression {
   def execute(env: Environment): Value
 }

@@ -6,6 +6,6 @@ package expression
 // (i.e., function calls or applications) use eager execution.
 // The execute all of their operands (i.e., inputs) even if
 // they don't need to.
-class FunCall {
+//case class FunCall {
 
-}
+//}

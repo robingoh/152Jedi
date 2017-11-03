@@ -12,3 +12,9 @@ object ExpTest extends App {
   println(pi.execute(globalEnv))
   println(num.execute(globalEnv))
 }
+
+// test output
+/*
+3.14
+3.14
+ */

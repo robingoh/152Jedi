@@ -7,8 +7,10 @@ import expression.Literal
   */
 case class Text(val value: String) extends Literal {
   def <(other: Text) = this.value.length < other.value.length
+  def >(other: Text) = this.value.length > other.value.length
   def ==(s: String) = value == s
   def substring(begin: Integer, end: Integer) = value.substring(begin.value, end.value)
   def +(other: Text) = Text(this.value + other.value)
 
+  override def toString: String = this.value
 }

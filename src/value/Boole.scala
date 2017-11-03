@@ -13,10 +13,6 @@ case class Boole(val value: Boolean) extends Literal {
   def ||(that: Boole) = this.value || that.value
 
 
-  override def execute(env: Environment): Value = ???
-}
-
-object Boole {
-
+//  override def execute(env: Environment): Value = ???
 }
 

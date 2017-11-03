@@ -9,10 +9,52 @@ object TextTest extends App {
   val s3 = Text("Dreaming")
   val s4 = s1 + s2 + s3
 
+  println(s"s1 = $s1")
+  println(s"s2 = $s2")
+  println(s"s3 = $s3")
+  println("\n// testing +, s4 = s1 + s2 + s3")
   println("s4 = " + s4)
 
+  println("\n// Testing substring")
+  println("substring of s4 from position 3 until 8")
   println(s4.substring(Integer(3), Integer(8)))
 
+  println("\n// Testing <")
   println(s1 + " < " + s3 + " = " + (s1 < s3))
+  println("\n// Testing >")
+  println(s1 + " > " + s3 + " = " + (s1 > s3))
 
+  println("\n// Testing ==")
+  println(s"$s1 == $s3 = ${s1 == s3}")
+  val s5 = Text("California")
+  println(s"\ns5 = $s5")
+  println("// testing s1 == s5")
+  println(s"$s1 == $s5 = ${s1 == s5}")
 }
+
+// test output
+/*
+s1 = California
+s2 = ...
+s3 = Dreaming
+
+// testing +, s4 = s1 + s2 + s3
+s4 = California...Dreaming
+
+// Testing substring
+substring of s4 from position 3 until 8
+iforn
+
+// Testing <
+California < Dreaming = false
+
+// Testing >
+California > Dreaming = true
+
+// Testing ==
+California == Dreaming = false
+
+s5 = California
+// testing s1 == s5
+California == California = true
+ */

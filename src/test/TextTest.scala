@@ -29,32 +29,9 @@ object TextTest extends App {
   val s5 = Text("California")
   println(s"\ns5 = $s5")
   println("// testing s1 == s5")
-  println(s"$s1 == $s5 = ${s1 == s5}")
+  println(s"$s1 == $s5 = ${s1 == s5}\n")
+
+  println("Test originated from Jedi 0.0 homework prompt")
+  println("\"cat\" < \"dog\" = " + (Text("cat") < Text("dog")))
+  println("animal = \"cat\" + \"fish\" = " + (Text("cat") + Text("fish")))
 }
-
-// test output
-/*
-s1 = California
-s2 = ...
-s3 = Dreaming
-
-// testing +, s4 = s1 + s2 + s3
-s4 = California...Dreaming
-
-// Testing substring
-substring of s4 from position 3 until 8
-iforn
-
-// Testing <
-California < Dreaming = false
-
-// Testing >
-California > Dreaming = true
-
-// Testing ==
-California == Dreaming = false
-
-s5 = California
-// testing s1 == s5
-California == California = true
- */

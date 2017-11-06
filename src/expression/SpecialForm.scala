@@ -6,4 +6,4 @@ package expression
 
 // Special forms use custom execution algorithms such a
 // short-circuit or conditional execution.
-trait SpecialForm
+trait SpecialForm extends Expression

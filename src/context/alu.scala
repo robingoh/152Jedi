@@ -79,20 +79,6 @@ object alu {
         }
     }
   }
-  private def generator(operationName: String, binaryOp: ): List[Value]=>Value = {
-    def function(vals: List[Value]): Value = {
-      try {
-        castAsIntegers(vals, operationName).reduce(_+_)
-      } catch {
-        case e: TypeException =>
-          try {
-            castAsReals(vals, "add").reduce(_+_)
-          } catch {
-            case e: TypeException => castAsTexts(vals, "less").reduce(_+_)
-          }
-      }
-    }
-  }
   private def mul(vals: List[Value]): Value = {
     try {
       castAsIntegers(vals, "mul").reduce(_*_)
@@ -101,7 +87,7 @@ object alu {
         try {
           castAsReals(vals, "mul").reduce(_*_)
         } catch {
-          case e: TypeException => castAsTexts(vals, "less").reduce(_*_)
+          case e: TypeException => castAsTexts(vals, "concat").reduce(_*_)
         }
     }
   }

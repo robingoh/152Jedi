@@ -15,6 +15,8 @@ import value._
 
 class JediParsers extends RegexParsers {
 
+  def identifier: Parser[Identifier]
+
   def expression: Parser[Expression] = declaration | conditional | disjunction | failure("Invalid expression")
 
   def declaration: Parser[Declaration] = "def" ~ identifier ~ "=" ~ expression ^^ {
@@ -26,19 +28,34 @@ class JediParsers extends RegexParsers {
     case "if"~"("~cond~")"~cons~Some("else"~alt) => Conditional(cond, cons, alt)
   }
 
-
+  //                                           // repeat        > drops || from the tree
   def  disjunction: Parser[Expression] = conjunction ~ rep("||" ~> conjunction) ^^ {
     case con ~ Nil => con
     case con ~ more => Disjunction(con::more)
   }
+  //                                                                   // transform
+  def conjunction: Parser[Expression] = equality ~ rep("&&" ~> equality) ^^ {
+    case expression ~ Nil => expression
+    case expression ~ moreStuffs => Conjunction(expression :: moreStuffs)// should be a list of expression
 
-  // conjunction ::= equality ~ ("&&" ~ equality)*
+   }
 
-  // equality ::= inequality ~ ("==" ~ inequality)*
+  def equality: Parser[Expression] = inequality ~ rep("==" ~> inequality) ^^ {
+    case expression ~ Nil => expression
+    case expression ~ moreStuffs => Equality(expression :: moreStuffs)
+  }
 
-  // inequality ::= sum ~ (("<" | ">" | "!=") ~ sum)?
+  def inequality: Parser[Expression] = sum ~ opt(("<" | ">" | "!=") ~> sum)) ^^ {
+    case sum ~ None => sum // ?
+    case sum ~ Some(anOperator ~ anotherSum) => anOperator match {
+      case "<" => FunCall(Identifier("less"), List(sum, anotherSum))
+      case ">" => FunCall(Identifier("more"), List(sum, anotherSum))
+      case "!=" => FunCall(Identifier("notEqual"), List(sum, anotherSum))
+    }
+  }
 
-  //
+  // p1 - p2 must be parsed into p1 + (-p2)
+  // same with product, t1 / t2 must be parsed into t1 * 1/t2
 
 
   // negate(exp) = 0 - exp
@@ -50,14 +67,29 @@ class JediParsers extends RegexParsers {
 
   // sum ::= product ~ ("+" | "-") ~ product)*
   def sum: Parser[Expression] = product ~ rep(("+"|"-") ~ product ^^ {
-    case "+"~s=>s
-    case "-"~s=> negate(s)
+    // pre-transformation
+    case "+" ~ s => s
+    case "-" ~ s => negate(s)
   })^^{
     case p~Nil=> p
     case p~rest=>FunCall(Identifier("add"), p::rest)
   }
 
+  private def inverse(exp: Expression): Expression = {
+    val divide = Identifier("div")
+    val one = Integer(1)
+    FunCall(divide, List(one, exp))
+  }
   // product ::= term ~ (("*" | "/") ~ term)*
+  def product: Parser[Expression] = product ~ rep(("*"|"/") ~ product ^^ {
+    // pre-transformation
+    case "*" ~ s => s
+    case "/" ~ s => inverse(s)
+  }) ^^ {
+    case p~Nil=> p
+    case p~rest=>FunCall(Identifier("mul"), p::rest)
+  }
+
 
   def term: Parser[Expression]  = funCall | literal | "("~>expression<~")"
 

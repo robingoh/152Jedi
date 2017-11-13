@@ -13,7 +13,7 @@ import value._
  * This could probably have been a singleton
  */
 
-class JediParsers extends RegexParsers {
+class Jedi1Parsers extends RegexParsers {
 
   def identifier: Parser[Identifier]
 
@@ -81,7 +81,8 @@ class JediParsers extends RegexParsers {
     FunCall(divide, List(one, exp))
   }
   // product ::= term ~ (("*" | "/") ~ term)*
-  def product: Parser[Expression] = product ~ rep(("*"|"/") ~ product ^^ {
+  // a * b / c transformed into a * b * (1 / c)
+  def product: Parser[Expression] = term ~ rep(("*"|"/") ~ term ^^ {
     // pre-transformation
     case "*" ~ s => s
     case "/" ~ s => inverse(s)
@@ -104,13 +105,24 @@ class JediParsers extends RegexParsers {
   // integer ::= 0|(\+|-)?[1-9][0-9]*
 
   // real ::= (\+|-)?[0-9]+\.[0-9]+
+  def real: Parser[Real] = """(\+|-)?[0-9]+\.[0-9]+""".r ^^ {
+    case someReal => Real(someReal.toDouble)
+  }
 
   // boole ::= true | false
+  def boole: Parser[Boole] = """true|false""".r ^^ {
+    case someBoole => Boole(someBoole.toBoolean)
+  }
 
   // identifier ::= [a-zA-Z][a-zA-Z0-9]*
+  def identifier: Parser[Text] = """[a-zA-Z][a-zA-Z0-9]*""".r ^^ {
+    case someIdentifier => Text(someIdentifier)
+  }
 
   // funCall ::= identifier ~ operands
+  def funCall = identifier ~ operands
 
   // operands ::= "(" ~ (expression ~ ("," ~ expression)*)? ~ ")"
+//  def operands: Parser[Opera]
 
 }

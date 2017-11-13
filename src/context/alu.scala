@@ -67,6 +67,21 @@ object alu {
     vals.map(castAsText(_, opcode))
   }
 
+  private def operatorFuncGenerator(name: String, operation: (Value, Value)=>Value) = {
+    def function(vals: List[Value]): Value = {
+      try {
+        castAsIntegers(vals, name).reduce(operation)
+      } catch {
+        case e: TypeException =>
+          try {
+            castAsReals(vals, name).reduce(operation)
+          } catch {
+            case e: TypeException => castAsTexts(vals, "concat").reduce(_+_)
+          }
+      }
+    }
+  }
+
   private def add(vals: List[Value]): Value = {
     try {
       castAsIntegers(vals, "add").reduce(_+_)
@@ -74,6 +89,18 @@ object alu {
       case e: TypeException =>
         try {
           castAsReals(vals, "add").reduce(_+_)
+        } catch {
+          case e: TypeException => castAsTexts(vals, "concat").reduce(_+_)
+        }
+    }
+  }
+  private def sub(vals: List[Value]): Value = {
+    try {
+      castAsIntegers(vals, "sub").reduce(_-_)
+    } catch {
+      case e: TypeException =>
+        try {
+          castAsReals(vals, "sub").reduce(_-_)
         } catch {
           case e: TypeException => castAsTexts(vals, "concat").reduce(_+_)
         }
@@ -87,7 +114,19 @@ object alu {
         try {
           castAsReals(vals, "mul").reduce(_*_)
         } catch {
-          case e: TypeException => castAsTexts(vals, "concat").reduce(_*_)
+          case e: TypeException => castAsTexts(vals, "concat").reduce(_+_)
+        }
+    }
+  }
+  private def div(vals: List[Value]): Value = {
+    try {
+      castAsIntegers(vals, "div").reduce(_/_)
+    } catch {
+      case e: TypeException =>
+        try {
+          castAsReals(vals, "div").reduce(_/_)
+        } catch {
+          case e: TypeException => castAsTexts(vals, "concat").reduce(_+_)
         }
     }
   }

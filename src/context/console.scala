@@ -8,7 +8,7 @@ import scala.io._
  * console.main launches repl or executes a Jedi file
  */
 object console {
-  val parsers = new JediParsers // for now
+  val parsers = new Jedi1Parsers // for now
   val globalEnv = new Environment
   var verbose = false
 

@@ -9,15 +9,8 @@ case class Integer(val value: Int) extends Literal with Ordered[Integer] with Eq
   def +(other: Integer) = Integer(this.value + other.value)
   def -(other: Integer) = Integer(this.value - other.value)
   def *(other: Integer) = Integer(this.value * other.value)
-  def /(other: Integer) = {
-    try {
-      Integer(this.value / other.value)
-    } catch {
-      case e: ArithmeticException => println("Cannot divide by zero.")
-    }
-  }
+  def /(other: Integer) = Integer(this.value / other.value)
 
-  // etc.
   override def toString = value.toString
 
   def compare(other: Integer): Int =

@@ -110,13 +110,7 @@ object alu {
     try {
       castAsIntegers(vals, "mul").reduce(_*_)
     } catch {
-      case e: TypeException =>
-        try {
-          castAsReals(vals, "mul").reduce(_*_)
-        } catch {
-          case e: TypeException => castAsTexts(vals, "concat").reduce(_+_)
-        }
-    }
+      case e: TypeException => castAsReals(vals, "mul").reduce(_*_)
   }
   private def div(vals: List[Value]): Value = {
     try {

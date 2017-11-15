@@ -8,9 +8,9 @@ import expression.Literal
   */
 case class Boole(val value: Boolean) extends Literal {
 
-  def unary_! = !value
-  def &&(that: Boole) = this.value && that.value
-  def ||(that: Boole) = this.value || that.value
+  def unary_! = Boole(!value)
+  def &&(that: Boole) = Boole(this.value && that.value)
+  def ||(that: Boole) = Boole(this.value || that.value)
 
 
 //  override def execute(env: Environment): Value = ???

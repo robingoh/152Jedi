@@ -1,5 +1,5 @@
 package expression
-import context.Environment
+import context.{Environment, alu}
 import value.Value
 
 /**
@@ -15,5 +15,7 @@ case class FunCall(val operator: Identifier,
   // eagerly convert operands to arguments (values)
   // then ask alu to execute operator with these arguments
   // alu.execute(operator,args)
-  override def execute(env: Environment): Value = ???
+  override def execute(env: Environment): Value = {
+    alu.execute(operator, operands.asInstanceOf[List[Value]])
+  }
 }

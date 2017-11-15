@@ -89,7 +89,7 @@ object console {
           println(e.gripe)
           if (verbose) e.printStackTrace()
         }
-        case e: UndefinedException => {
+        case e: TypeException => {
           println(e.gripe)
           if (verbose) e.printStackTrace()
         }

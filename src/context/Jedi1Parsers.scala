@@ -15,14 +15,16 @@ import value._
 
 class Jedi1Parsers extends RegexParsers {
 
-  def identifier: Parser[Identifier]
-
   def expression: Parser[Expression] = declaration | conditional | disjunction | failure("Invalid expression")
 
   def declaration: Parser[Declaration] = "def" ~ identifier ~ "=" ~ expression ^^ {
     case "def"~id~"="~exp => Declaration(id, exp)
   }
 
+  /*
+  if a b else c
+
+   */
   def conditional: Parser[Conditional] = "if" ~ "(" ~ expression ~ ")" ~ expression ~ opt("else" ~ expression) ^^ {
     case "if"~"("~cond~")"~cons~None => Conditional(cond, cons)
     case "if"~"("~cond~")"~cons~Some("else"~alt) => Conditional(cond, cons, alt)
@@ -42,9 +44,10 @@ class Jedi1Parsers extends RegexParsers {
 
   def equality: Parser[Expression] = inequality ~ rep("==" ~> inequality) ^^ {
     case expression ~ Nil => expression
-    case expression ~ moreStuffs => Equality(expression :: moreStuffs)
+    case expression ~ moreStuffs => Equality(expression :: moreStuffs) // do funcall the equal
   }
 
+  // inequality ::= sum ~ (("<" | ">" | "!=") ~ sum)?
   def inequality: Parser[Expression] = sum ~ opt(("<" | ">" | "!=") ~> sum)) ^^ {
     case sum ~ None => sum // ?
     case sum ~ Some(anOperator ~ anotherSum) => anOperator match {
@@ -72,7 +75,7 @@ class Jedi1Parsers extends RegexParsers {
     case "-" ~ s => negate(s)
   })^^{
     case p~Nil=> p
-    case p~rest=>FunCall(Identifier("add"), p::rest)
+    case p~rest=>FunCall(Identifier("add"), p::rest) // list of operands that we got
   }
 
   private def inverse(exp: Expression): Expression = {
@@ -118,14 +121,21 @@ class Jedi1Parsers extends RegexParsers {
   }
 
   // identifier ::= [a-zA-Z][a-zA-Z0-9]*
-  def identifier: Parser[Text] = """[a-zA-Z][a-zA-Z0-9]*""".r ^^ {
-    case someIdentifier => Text(someIdentifier)
+  def identifier: Parser[Identifier] = """[a-zA-Z][a-zA-Z0-9]*""".r ^^ {
+    case someIdentifier => Identifier(someIdentifier)
   }
 
   // funCall ::= identifier ~ operands
   def funCall = identifier ~ operands
 
   // operands ::= "(" ~ (expression ~ ("," ~ expression)*)? ~ ")"
-  def operands = "(" ~ opt(expression ~ rep("," ~ expression)) ~ ")"
+  // operands("(x,y,z)") = Some(Identifier(x) ~ List[Identifier(y), Identifier(z)]) =>
+  // List[Ident(x), Ident(y),...]
+  def operands: Parser[List[Expression]] = "(" ~> opt(expression ~ rep("," ~> expression)) <~ ")" ^^ {
+    case None => Nil
+    case Some => Some(Identifier(x) :: List[Identifier(y), Identifier(z)])
+
+
+  }
 
 }

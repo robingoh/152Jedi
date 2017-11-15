@@ -108,21 +108,94 @@ object alu {
   }
   private def mul(vals: List[Value]): Value = {
     try {
-      castAsIntegers(vals, "mul").reduce(_*_)
+      castAsIntegers(vals, "mul").reduce(_ * _)
     } catch {
-      case e: TypeException => castAsReals(vals, "mul").reduce(_*_)
-  }
-  private def div(vals: List[Value]): Value = {
-    try {
-      castAsIntegers(vals, "div").reduce(_/_)
-    } catch {
-      case e: TypeException =>
-        try {
-          castAsReals(vals, "div").reduce(_/_)
-        } catch {
-          case e: TypeException => castAsTexts(vals, "concat").reduce(_+_)
-        }
+      case e: TypeException => castAsReals(vals, "mul").reduce(_ * _)
     }
+
+    private def div(vals: List[Value]): Value = {
+      try {
+        castAsIntegers(vals, "div").reduce(_ / _)
+      } catch {
+        case e: TypeException =>
+          try {
+            castAsReals(vals, "div").reduce(_ / _)
+          } catch {
+            case e: TypeException => castAsTexts(vals, "concat").reduce(_ + _)
+          }
+      }
+    }
+  }
+
+  def less(vals: List[Value]): Value = {
+    if (vals.length  != 2) throw new TypeException("less expects two inputs")
+    try {
+      val nums = castAsIntegers(vals, "less")
+      Boole(nums(0) < nums(1))
+    } catch {
+      case e: TypeException => {
+        try {
+          val nums = castAsReals(vals, "less")
+          Boole(nums(0) < nums(1))
+        } catch {
+          case e: TypeException => {
+            val texts = castAsTexts(vals, "less")
+            Boole(texts(0) < texts(1))
+          }
+        }
+      }
+    }
+  }
+  def more(vals: List[Value]): Value = {
+    if (vals.length  != 2) throw new TypeException("more expects two inputs")
+    try {
+      val nums = castAsIntegers(vals, "more")
+      Boole(nums(0) > nums(1))
+    } catch {
+      case e: TypeException => {
+        try {
+          val nums = castAsReals(vals, "more")
+          Boole(nums(0) > nums(1))
+        } catch {
+          case e: TypeException => {
+            val texts = castAsTexts(vals, "more")
+            Boole(texts(0) > texts(1))
+          }
+        }
+      }
+    }
+  }
+
+  def equals(vals: List[Value]): Value = {
+    // all tail elements equal to the head of the list
+    val tail2 = vals.tail.filter(_ == vals.head)
+    if (tail2.size == vals.tail.size) Boole(true) else Boole(false)
+//    if (vals.length != 2) throw new TypeException("equals expects two inputs")
+//    try {
+//      val nums = castAsIntegers(vals, "equals")
+//      Boole(nums(0) == nums(1))
+//    } catch {
+//      case e: TypeException => {
+//        try {
+//          val nums = castAsReals(vals, "equals")
+//          Boole(nums(0) == nums(1))
+//        } catch {
+//          case e: TypeException => {
+//            val texts = castAsTexts(vals, "equals")
+//            Boole(texts(0) == texts(1))
+//          }
+//        }
+//      }
+//    }
+  }
+  def unequals(vals: List[Value]): Value = {
+    not(List(equals(vals)))
+  }
+  def not(vals: List[Value]): Value = {
+    if (vals.length != 1) throw new TypeException("not expects one input")
+    if (!vals(0).isInstanceOf[Boole]) throw new TypeException("can only be boole")
+    def someBoole = vals(0).asInstanceOf[Boole]
+    !someBoole
   }
 
 

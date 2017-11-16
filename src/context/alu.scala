@@ -67,21 +67,6 @@ object alu {
     vals.map(castAsText(_, opcode))
   }
 
-  private def operatorFuncGenerator(name: String, operation: (Value, Value)=>Value) = {
-    def function(vals: List[Value]): Value = {
-      try {
-        castAsIntegers(vals, name).reduce(operation)
-      } catch {
-        case e: TypeException =>
-          try {
-            castAsReals(vals, name).reduce(operation)
-          } catch {
-            case e: TypeException => castAsTexts(vals, "concat").reduce(_+_)
-          }
-      }
-    }
-  }
-
   private def add(vals: List[Value]): Value = {
     try {
       castAsIntegers(vals, "add").reduce(_+_)
@@ -98,12 +83,7 @@ object alu {
     try {
       castAsIntegers(vals, "sub").reduce(_-_)
     } catch {
-      case e: TypeException =>
-        try {
-          castAsReals(vals, "sub").reduce(_-_)
-        } catch {
-          case e: TypeException => castAsTexts(vals, "concat").reduce(_+_)
-        }
+      case e: TypeException => castAsReals(vals, "sub").reduce(_-_)
     }
   }
   private def mul(vals: List[Value]): Value = {
@@ -112,20 +92,17 @@ object alu {
     } catch {
       case e: TypeException => castAsReals(vals, "mul").reduce(_ * _)
     }
+  }
 
-    private def div(vals: List[Value]): Value = {
-      try {
-        castAsIntegers(vals, "div").reduce(_ / _)
-      } catch {
-        case e: TypeException =>
-          try {
-            castAsReals(vals, "div").reduce(_ / _)
-          } catch {
-            case e: TypeException => castAsTexts(vals, "concat").reduce(_ + _)
-          }
-      }
+  private def div(vals: List[Value]): Value = {
+    try {
+      castAsIntegers(vals, "div").reduce(_ / _)
+    } catch {
+      case e: TypeException =>
+        castAsReals(vals, "div").reduce(_ / _)
     }
   }
+
 
   def less(vals: List[Value]): Value = {
     if (vals.length  != 2) throw new TypeException("less expects two inputs")
@@ -170,23 +147,6 @@ object alu {
     // all tail elements equal to the head of the list
     val tail2 = vals.tail.filter(_ == vals.head)
     if (tail2.size == vals.tail.size) Boole(true) else Boole(false)
-//    if (vals.length != 2) throw new TypeException("equals expects two inputs")
-//    try {
-//      val nums = castAsIntegers(vals, "equals")
-//      Boole(nums(0) == nums(1))
-//    } catch {
-//      case e: TypeException => {
-//        try {
-//          val nums = castAsReals(vals, "equals")
-//          Boole(nums(0) == nums(1))
-//        } catch {
-//          case e: TypeException => {
-//            val texts = castAsTexts(vals, "equals")
-//            Boole(texts(0) == texts(1))
-//          }
-//        }
-//      }
-//    }
   }
   def unequals(vals: List[Value]): Value = {
     not(List(equals(vals)))
@@ -198,11 +158,8 @@ object alu {
     !someBoole
   }
 
-
   def write(vals: List[Value]): Value = { println(vals(0)); Notification.DONE }
   def read(vals: List[Value]): Value = { val result = io.StdIn.readDouble(); Real(result)}
   def prompt(vals: List[Value]): Value = { print("=> "); Notification.DONE }
 
-
-  // etc.
 }

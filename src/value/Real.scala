@@ -11,11 +11,11 @@ case class Real (val value: Double) extends Literal with Ordered[Real] with Equa
   def -(other: Real) = Real(this.value - other.value)
   def *(other: Real) = Real(this.value * other.value)
   def /(other: Real) = {
-    try {
+//    try {
       Real(this.value / other.value)
-    } catch {
-      case e: ArithmeticException => println("Cannot divide by zero.")
-    }
+//    } catch {
+//      case e: ArithmeticException => println("Cannot divide by zero.")
+//    }
   }
 
   override def toString = value.toString

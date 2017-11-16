@@ -15,7 +15,11 @@ object NumberTest extends App {
   println("i1 * i2 = " + (i1 * i2))
 
   println("i1 / i2 = " + (i1 / i2) + "\n")
-  println("i1 / 0 = " + (i1 / Integer(0)) + "\n")
+  try {
+    println("i1 / 0 = " + (i1 / Integer(0)) + "\n")
+  } catch {
+    case e: ArithmeticException => println("Cannot divide by zero.")
+  }
 
   println("i1 == i2 = " + (i1 == i2))
   println("i1 < i2 = " + (i1 < i2))

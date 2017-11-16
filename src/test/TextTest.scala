@@ -3,7 +3,6 @@ package test
 import value._
 
 object TextTest extends App {
-
   val s1 = Text("California")
   val s2 = Text("...")
   val s3 = Text("Dreaming")
@@ -35,3 +34,34 @@ object TextTest extends App {
   println("\"cat\" < \"dog\" = " + (Text("cat") < Text("dog")))
   println("animal = \"cat\" + \"fish\" = " + (Text("cat") + Text("fish")))
 }
+
+// test output
+/*
+s1 = California
+s2 = ...
+s3 = Dreaming
+
+// testing +, s4 = s1 + s2 + s3
+s4 = California...Dreaming
+
+// Testing substring
+substring of s4 from position 3 until 8
+iforn
+
+// Testing <
+California < Dreaming = true
+
+// Testing >
+California > Dreaming = false
+
+// Testing ==
+California == Dreaming = false
+
+s5 = California
+// testing s1 == s5
+California == California = true
+
+Test originated from Jedi 0.0 homework prompt
+"cat" < "dog" = true
+animal = "cat" + "fish" = catfish
+ */

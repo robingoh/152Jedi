@@ -16,6 +16,7 @@ case class FunCall(val operator: Identifier,
   // then ask alu to execute operator with these arguments
   // alu.execute(operator,args)
   override def execute(env: Environment): Value = {
-    alu.execute(operator, operands.asInstanceOf[List[Value]])
+    val arguments = operands.map(_.execute(env))
+    alu.execute(operator, arguments)
   }
 }

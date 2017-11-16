@@ -44,17 +44,15 @@ class Jedi1Parsers extends RegexParsers {
 
   def equality: Parser[Expression] = inequality ~ rep("==" ~> inequality) ^^ {
     case expression ~ Nil => expression
-    case expression ~ moreStuffs => Equality(expression :: moreStuffs) // do funcall the equal
+    case expression ~ moreStuffs => FunCall(Identifier("notEqual"), expression :: moreStuffs) // do funcall the equal
   }
 
   // inequality ::= sum ~ (("<" | ">" | "!=") ~ sum)?
   def inequality: Parser[Expression] = sum ~ opt(("<" | ">" | "!=") ~> sum)) ^^ {
     case sum ~ None => sum // ?
-    case sum ~ Some(anOperator ~ anotherSum) => anOperator match {
-      case "<" => FunCall(Identifier("less"), List(sum, anotherSum))
-      case ">" => FunCall(Identifier("more"), List(sum, anotherSum))
-      case "!=" => FunCall(Identifier("notEqual"), List(sum, anotherSum))
-    }
+    case sum ~ Some("<" ~ anotherSum) => FunCall(Identifier("less"), List(sum, anotherSum))
+    case sum ~ Some(">" ~ anotherSum) => FunCall(Identifier("more"), List(sum, anotherSum))
+    case sum ~ Some("!=" ~ anotherSum) => FunCall(Identifier("notEqual"), List(sum, anotherSum))
   }
 
   // p1 - p2 must be parsed into p1 + (-p2)

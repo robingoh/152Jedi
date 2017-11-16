@@ -121,3 +121,46 @@ object console {
       }
   }
 }
+
+// jedi1tests.txt console output
+/*
+-> def sum = add(mul(3, 4), sub(9, 1))
+OK
+-> sum
+20
+-> 3 * 4 + 9
+21
+-> 3 * (4 + 9)
+39
+-> add(3, 4.0)
+7.0
+-> sub(3, 4)
+-1
+-> sub(3, -4)
+7
+-> 3 - -4
+7
+-> def pi = 3.14
+OK
+-> def e = 2.7
+OK
+-> pi * e + sum
+28.478
+-> 3 < 4
+true
+-> 3 == 4
+false
+-> 3 != 4
+true
+-> 3 + (if(sum < 19) 8 else 3)
+6
+-> if (sum < 19) nada else 3
+3
+-> 3 < 4 && 1 + 1 == 2 && sum < 19 && nada
+false
+-> 4 < 3 || 1 + 1 != 2 || sum < 19 ||  true || nada
+true
+bye
+
+Process finished with exit code 0
+ */

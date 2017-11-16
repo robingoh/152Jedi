@@ -12,7 +12,7 @@ case class Boole(val value: Boolean) extends Literal {
   def &&(that: Boole) = Boole(this.value && that.value)
   def ||(that: Boole) = Boole(this.value || that.value)
 
+  override def toString: String = value.toString
 
-//  override def execute(env: Environment): Value = ???
 }
 

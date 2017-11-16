@@ -1,6 +1,6 @@
 package expression
 import context.Environment
-import value.Value
+import value.{Boole, Value}
 
 /**
   * Created by robingoh on 11/6/17.
@@ -8,5 +8,12 @@ import value.Value
 case class Disjunction(val operands: List[Expression])
   extends SpecialForm {
 
-  override def execute(env: Environment): Value = ???
+  override def execute(env: Environment): Value = {
+    var result = false
+    for (operand <- operands if !result) {
+      if (operand.execute(env) == Boole(true))
+        result = true
+    }
+    Boole(result)
+  }
 }

@@ -21,17 +21,13 @@ class Jedi1Parsers extends RegexParsers {
     case "def"~id~"="~exp => Declaration(id, exp)
   }
 
-  /*
-  if a b else c
-
-   */
   def conditional: Parser[Conditional] = "if" ~ "(" ~ expression ~ ")" ~ expression ~ opt("else" ~ expression) ^^ {
     case "if"~"("~cond~")"~cons~None => Conditional(cond, cons)
     case "if"~"("~cond~")"~cons~Some("else"~alt) => Conditional(cond, cons, alt)
   }
 
   //                                           // repeat        > drops || from the tree
-  def  disjunction: Parser[Expression] = conjunction ~ rep("||" ~> conjunction) ^^ {
+  def disjunction: Parser[Expression] = conjunction ~ rep("||" ~> conjunction) ^^ {
     case con ~ Nil => con
     case con ~ more => Disjunction(con::more)
   }
@@ -39,25 +35,23 @@ class Jedi1Parsers extends RegexParsers {
   def conjunction: Parser[Expression] = equality ~ rep("&&" ~> equality) ^^ {
     case expression ~ Nil => expression
     case expression ~ moreStuffs => Conjunction(expression :: moreStuffs)// should be a list of expression
-
    }
 
   def equality: Parser[Expression] = inequality ~ rep("==" ~> inequality) ^^ {
     case expression ~ Nil => expression
-    case expression ~ moreStuffs => FunCall(Identifier("notEqual"), expression :: moreStuffs) // do funcall the equal
+    case expression ~ moreStuffs => FunCall(Identifier("equals"), expression :: moreStuffs) // do funcall the equal
   }
 
   // inequality ::= sum ~ (("<" | ">" | "!=") ~ sum)?
-  def inequality: Parser[Expression] = sum ~ opt(("<" | ">" | "!=") ~> sum)) ^^ {
+  def inequality: Parser[Expression] = sum ~ opt(("<" | ">" | "!=") ~ sum) ^^ {
     case sum ~ None => sum // ?
     case sum ~ Some("<" ~ anotherSum) => FunCall(Identifier("less"), List(sum, anotherSum))
     case sum ~ Some(">" ~ anotherSum) => FunCall(Identifier("more"), List(sum, anotherSum))
-    case sum ~ Some("!=" ~ anotherSum) => FunCall(Identifier("notEqual"), List(sum, anotherSum))
+    case sum ~ Some("!=" ~ anotherSum) => FunCall(Identifier("unequals"), List(sum, anotherSum))
   }
 
   // p1 - p2 must be parsed into p1 + (-p2)
   // same with product, t1 / t2 must be parsed into t1 * 1/t2
-
 
   // negate(exp) = 0 - exp
   private def negate(exp: Expression): Expression = {
@@ -92,11 +86,9 @@ class Jedi1Parsers extends RegexParsers {
     case p~rest=>FunCall(Identifier("mul"), p::rest)
   }
 
-
   def term: Parser[Expression]  = funCall | literal | "("~>expression<~")"
 
   def literal = boole | real | integer | text | identifier
-
 
   // text ::= any chars bracketed by quotes
   def text: Parser[Text] = """\"[^"]+\"""".r ^^ {
@@ -104,7 +96,7 @@ class Jedi1Parsers extends RegexParsers {
   }
 
   // integer ::= 0|(\+|-)?[1-9][0-9]*
-  def integer: Parser[Real] = """0|(\+|-)?[1-9][0-9]*""".r ^^ {
+  def integer: Parser[Integer] = """0|(\+|-)?[1-9][0-9]*""".r ^^ {
     case someInteger => Integer(someInteger.toInt)
   }
 
@@ -124,16 +116,16 @@ class Jedi1Parsers extends RegexParsers {
   }
 
   // funCall ::= identifier ~ operands
-  def funCall = identifier ~ operands
+  def funCall = identifier ~ operands ^^ {
+    case identifier ~ operands => FunCall(identifier, operands)
+  }
 
   // operands ::= "(" ~ (expression ~ ("," ~ expression)*)? ~ ")"
   // operands("(x,y,z)") = Some(Identifier(x) ~ List[Identifier(y), Identifier(z)]) =>
   // List[Ident(x), Ident(y),...]
   def operands: Parser[List[Expression]] = "(" ~> opt(expression ~ rep("," ~> expression)) <~ ")" ^^ {
     case None => Nil
-    case Some => Some(Identifier(x) :: List[Identifier(y), Identifier(z)])
-
-
+    //    case Some => Some(Identifier(x) :: List[Identifier(y), Identifier(z)])
+    case Some(expression ~ expressions) => expression :: expressions
   }
-
 }

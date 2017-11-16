@@ -20,3 +20,12 @@ object FunCallTest extends App {
   exp = FunCall(Identifier("mul"), operands)
   println(exp.execute(globalEnvironment))
 }
+
+// test output
+/*
+13
+true
+42
+
+Process finished with exit code 0
+ */

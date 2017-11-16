@@ -98,8 +98,17 @@ object alu {
     try {
       castAsIntegers(vals, "div").reduce(_ / _)
     } catch {
+      case e: ArithmeticException =>
+        println("Cannot divide by zero.")
+        Integer(0)
       case e: TypeException =>
-        castAsReals(vals, "div").reduce(_ / _)
+        try {
+          castAsReals(vals, "div").reduce(_ / _)
+        } catch {
+          case e: ArithmeticException =>
+            println("Cannot divide by zero.")
+            Real(0.0)
+        }
     }
   }
 

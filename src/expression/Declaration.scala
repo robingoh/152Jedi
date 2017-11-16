@@ -9,7 +9,7 @@ case class Declaration(val id: Identifier, val exp: Expression) extends SpecialF
   override def execute(env: Environment) = {
     def value = exp.execute(env)
     env.put(id, value)
-    Notification.OK // ?
+    Notification.OK
     /*
     1. value = exp.execute
     2. env.put(id,value)

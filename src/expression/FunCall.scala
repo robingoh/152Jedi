@@ -1,6 +1,6 @@
 package expression
 import context.{Environment, alu}
-import value.Value
+import value.{Closure, Value}
 
 /**
   * Created by robingoh on 10/25/17.
@@ -17,6 +17,10 @@ case class FunCall(val operator: Identifier,
   // alu.execute(operator,args)
   override def execute(env: Environment): Value = {
     val arguments = operands.map(_.execute(env))
-    alu.execute(operator, arguments)
+    val f = operator.execute(env)
+    f match {
+      case closure: Closure => closure(arguments)
+      case _ => alu.execute(operator, arguments)
+    }
   }
 }

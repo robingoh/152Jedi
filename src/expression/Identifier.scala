@@ -9,11 +9,18 @@ import value.Value
 
 //  Identifiers are names of values. To execute an
 // identifier we simply look it up in the environment.
+// Jedi 1
+//case class Identifier(val name: String) extends Expression {
+//  override def toString = name
+//  override def execute(env: Environment) =
+//    env.get(this) match {
+//      case None => throw new Exception("Undefined: " + name)
+//      case Some(value) => value
+//    }
+//}
+
+// Jedi 2
 case class Identifier(val name: String) extends Expression {
   override def toString = name
-  override def execute(env: Environment) =
-    env.get(this) match {
-      case None => throw new Exception("Undefined: " + name)
-      case Some(value) => value
-    }
+  def execute(env: Environment) = env(this)
 }

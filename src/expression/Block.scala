@@ -6,11 +6,13 @@ import context.Environment
   */
 case class Block(val expressions: List[Expression]) extends SpecialForm {
   def execute(env: Environment) = {
-    // step 1 create localEnv that extends env
-    val localEnv = new Environment(env)
+    // step 1 create tempEnv that extends env
+    val tempEnv = new Environment(env)
 
-    // step 2 execute and put into localEnv
-    localEnv()
+    // step 2 execute and put into localEnv return last value
+    for (expression <- expressions)
+      expression.execute(tempEnv)
+
   }
 
   /*

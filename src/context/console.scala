@@ -8,7 +8,7 @@ import scala.io._
  * console.main launches repl or executes a Jedi file
  */
 object console {
-  val parsers = new Jedi1Parsers
+  val parsers = new Jedi2Parsers
   val globalEnv = new Environment
   var verbose = false
 
@@ -33,7 +33,6 @@ object console {
         println("-> " + line)
         println(execute(line))
       } catch {
-
         case e: SyntaxException =>
           println(e)
           println(e.result.msg)
@@ -43,13 +42,12 @@ object console {
         case e: UndefinedException =>
           println(e)
           if (verbose) e.printStackTrace()
-        case e: UndefinedException =>
+        case e: TypeException =>
           println(e)
           if (verbose) e.printStackTrace()
         case e: JediException =>
           println(e)
           if (verbose) e.printStackTrace()
-
         case e: Exception =>
           println(e)
           more = false
@@ -110,44 +108,47 @@ object console {
   }
 }
 
-// jedi1tests.txt console output
+// my jedi2tests.txt console output
 /*
--> def sum = add(mul(3, 4), sub(9, 1))
-OK
--> sum
-20
--> 3 * 4 + 9
-21
--> 3 * (4 + 9)
-39
--> add(3, 4.0)
-7.0
--> sub(3, 4)
--1
--> sub(3, -4)
-7
--> 3 - -4
-7
 -> def pi = 3.14
 OK
--> def e = 2.7
+-> def pi2 = {def x = 2; 2 * pi}
 OK
--> pi * e + sum
-28.478
--> 3 < 4
-true
--> 3 == 4
-false
--> 3 != 4
-true
--> 3 + (if(sum < 19) 8 else 3)
-6
--> if (sum < 19) nada else 3
-3
--> 3 < 4 && 1 + 1 == 2 && sum < 19 && nada
-false
--> 4 < 3 || 1 + 1 != 2 || sum < 19 ||  true || nada
-true
+-> write(pi2)
+6.28
+DONE
+-> def fun1 = lambda(x, y) 3 * x + 2 * y
+OK
+-> fun1(5, 7)
+29
+-> def tri = lambda(n) if (n == 0) 0 else n + tri(n - 1)
+OK
+-> tri(5)
+15
+-> tri(6)
+21
+-> def square = lambda(x) x * x
+OK
+-> def addx = lambda(x) lambda(y) x + y
+OK
+-> def add5 = addx(5)
+OK
+-> add5(9)
+14
+-> def compose = lambda(f, g) lambda(z) f(g(z))
+OK
+-> def add5square = compose(square, add5)
+OK
+-> add5square(3)
+64
+-> def fun2 = {def x = 10; lambda(y) x * y}
+OK
+-> fun2(5.5)
+55.0
+-> def fun3 = lambda (y) { def x = 10; x * y}
+OK
+-> fun3(5.5)
+55.0
 bye
 
 Process finished with exit code 0

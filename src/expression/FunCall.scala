@@ -16,8 +16,7 @@ case class FunCall(val operator: Identifier, val operands: List[Expression])
   // alu.execute(operator,args)
   def execute(env: Environment): Value = {
     val arguments = operands.map(_.execute(env))
-    val f = operator.execute(env)
-    f match {
+    operator.execute(env) match {
       case closure: Closure => closure(arguments)
       case _ => alu.execute(operator, arguments)
     }

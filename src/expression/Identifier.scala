@@ -1,7 +1,7 @@
 package expression
 
 import context.Environment
-import value.Value
+
 
 /**
   * Created by robingoh on 10/25/17.
@@ -14,7 +14,7 @@ import value.Value
 //  override def toString = name
 //  override def execute(env: Environment) =
 //    env.get(this) match {
-//      case None => throw new Exception("Undefined: " + name)
+//      case None => throw new UndefinedException(Identifier(name))
 //      case Some(value) => value
 //    }
 //}

@@ -12,10 +12,13 @@ class Closure(val parameters: List[Identifier],
   extends Value {
   // callEnv is for implementing static scope or dynamic scope (extra credit)
   def apply(args: List[Value], callEnv: Environment = null): Value = {
-    val tempEnv = new Environment(definingEnv)
+    var tempEnv: Environment = null
+    // if want dynamic scope
+    if (callEnv != null) tempEnv = new Environment(callEnv)
+    // else static scope
+    else tempEnv = new Environment(definingEnv)
 
     tempEnv.bulkPut(parameters, args)
     body.execute(tempEnv)
   }
 }
-// I think this is done

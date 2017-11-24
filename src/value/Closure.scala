@@ -8,12 +8,12 @@ import expression.{Expression, Identifier}
   */
 class Closure(val parameters: List[Identifier],
               val body: Expression,
-              val defEnv: Environment)
+              val definingEnv: Environment)
   extends Value {
-  def apply(args: List[Value],
-           // for static scope or dynamic scope
-            callEnv: Environment = null): Value = {
-    val tempEnv = new Environment(defEnv)
+  // callEnv is for implementing static scope or dynamic scope (extra credit)
+  def apply(args: List[Value], callEnv: Environment = null): Value = {
+    val tempEnv = new Environment(definingEnv)
+
     tempEnv.bulkPut(parameters, args)
     body.execute(tempEnv)
   }

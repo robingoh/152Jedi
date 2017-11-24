@@ -8,7 +8,7 @@ import scala.io._
  * console.main launches repl or executes a Jedi file
  */
 object console {
-  val parsers = new Jedi1Parsers // for now
+  val parsers = new Jedi1Parsers
   val globalEnv = new Environment
   var verbose = false
 
@@ -16,12 +16,11 @@ object console {
     val tree = parsers.parseAll(parsers.expression, cmmd)
     tree match {
       case tree: parsers.Failure => throw new SyntaxException(tree)
-      case _ => {
+      case _ =>
         val exp = tree.get  // get the expression from the tree
         //println("translation: " + exp.emit)
         val result = exp.execute(globalEnv)  // execute the expression
         result.toString  // return string representation of result
-      }
     }
   }
 
@@ -35,30 +34,25 @@ object console {
         println(execute(line))
       } catch {
 
-        case e: SyntaxException => {
+        case e: SyntaxException =>
           println(e)
           println(e.result.msg)
           println("line # = " + e.result.next.pos.line)
           println("column # = " + e.result.next.pos.column)
           println("token = " + e.result.next.first)
-        }
-        case e: UndefinedException => {
+        case e: UndefinedException =>
           println(e)
           if (verbose) e.printStackTrace()
-        }
-        case e: UndefinedException => {
+        case e: UndefinedException =>
           println(e)
           if (verbose) e.printStackTrace()
-        }
-        case e: JediException => {
+        case e: JediException =>
           println(e)
           if (verbose) e.printStackTrace()
-        }
 
-        case e: Exception => {
+        case e: Exception =>
           println(e)
           more = false
-        }
       } // catch
     } // for
     println("bye")
@@ -78,29 +72,24 @@ object console {
         else println(execute(cmmd))
       }
       catch {
-        case e: SyntaxException => {
+        case e: SyntaxException =>
           println(e)
           println(e.result.msg)
           println("line # = " + e.result.next.pos.line)
           println("column # = " + e.result.next.pos.column)
           println("token = " + e.result.next.first)
-        }
-        case e: UndefinedException => {
+        case e: UndefinedException =>
           println(e.gripe)
           if (verbose) e.printStackTrace()
-        }
-        case e: TypeException => {
+        case e: TypeException =>
           println(e.gripe)
           if (verbose) e.printStackTrace()
-        }
-        case e: JediException => {
+        case e: JediException =>
           println(e.gripe)
           if (verbose) e.printStackTrace()
-        }
-        case e: Exception => {
+        case e: Exception =>
           println(e.getMessage)
           more = false
-        }
       } finally {
         Console.flush
       }
@@ -115,9 +104,8 @@ object console {
       try {
         executeFile(args(0))
       } catch  {
-        case e: Exception => {
+        case e: Exception =>
           println(e)
-        }
       }
   }
 }

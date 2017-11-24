@@ -5,11 +5,9 @@ import value.{Closure, Value}
 /**
   * Created by robingoh on 11/20/17.
   */
-case class Lambda(val parameters: List[Identifier],
-                  val body: Expression)
+case class Lambda(val parameters: List[Identifier], val body: Expression)
   extends SpecialForm {
-  def execute(env: Environment): Value =
-    new Closure(parameters, body, env)
+  def execute(env: Environment): Value = new Closure(parameters, body, env)
 
 }
 

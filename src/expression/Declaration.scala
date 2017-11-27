@@ -8,8 +8,16 @@ import value.{Notification, Value}
 case class Declaration(val id: Identifier, val exp: Expression) extends SpecialForm {
   override def execute(env: Environment) = {
     def value = exp.execute(env)
-    env.put(id, value)
-    Notification.OK
+
+    // 11/27
+    // does not allow redefinition of variable in hash table
+    try {
+      env.put(id, value)
+      Notification.OK
+    } catch {
+      case  =>
+
+    }
     /*
     1. value = exp.execute
     2. env.put(id,value)

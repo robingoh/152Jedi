@@ -1,5 +1,5 @@
 package expression
-import context.{Environment, alu}
+import context.{Environment, alu2}
 import value.{Closure, Value}
 
 /**
@@ -18,7 +18,7 @@ case class FunCall(val operator: Identifier, val operands: List[Expression])
     val arguments = operands.map(_.execute(env))
     operator.execute(env) match {
       case closure: Closure => closure(arguments)
-      case _ => alu.execute(operator, arguments)
+      case _ => alu2.execute(operator, arguments)
     }
   }
 }

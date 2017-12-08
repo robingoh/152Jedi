@@ -24,3 +24,10 @@ case class Identifier(val name: String) extends Expression {
   override def toString = name
   def execute(env: Environment) = env(this)
 }
+
+case class Identifier(val name: String,
+                      val names: List[String] = Nil)
+extends  Expression {
+  override def toString = name
+  def execute(env: Environment) = env(this)
+}

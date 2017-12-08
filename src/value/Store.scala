@@ -9,29 +9,45 @@ import scala.collection.mutable.ArrayBuffer
 // backed by mutable buffer
 
 
-class Store() extends Value {
-  private var elems = ArrayBuffer[Value]()
+class Store(private var elems:ArrayBuffer[Value] = ArrayBuffer[Value]()) extends Value {
+  //private var elems = ArrayBuffer[Value]()
   // adds e to the end of store
   def add(e: Value) {
     elems += e
   }
   // inserts e at position pos in this
-  def put(element: Value, position: Integer) {???}
+  def put(element: Value, position: Integer) {
+    elems.insert(position.value, element)
+  }
   // removes element at position pos from this
-  def rem(position: Integer) {???}
+  def rem(position: Integer) {
+    elems.remove(position.value)
+  }
   // returns element at position pos in this
-  def get(position: Integer): Value = ???
+  def get(position: Integer): Value = elems(position.value)
+
   // returns true ie this contains e
-  def contains(element: Value): Boole = ???
+  def contains(element: Value): Boole = Boole(elems.contains(element))
+
   // returns the size of this
-  def size: Integer = ???
+  def size: Integer = Integer(elems.size)
+
   // returns "{e0 e1 e2 ...}"
-  override def toString = {???}
+  override def toString = elems.toString
 
   // map and filter return new Store object
   // but not modifying this object
   // returns container containing the elements of this transformed by trans
-  def map(transform: Closure): Store = {???}
+  def map(transform: Closure): Store = {
+    new Store(elems.map((v:Value)=> transform(List(v))))
+  }
   // returns container containing the elements of this that passed test
   def filter(test: Closure): Store = {???}
 }
+
+/*
+def abc {???} procedure when it's void
+def abc = {???} multi-expression
+def abc = ??? single
+def abc: Unit = {???}
+ */

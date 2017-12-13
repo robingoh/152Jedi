@@ -1,5 +1,5 @@
 package context
-
+import scala.util.parsing.combinator._
 import expression.{Block, Expression, Identifier, Lambda}
 
 /**

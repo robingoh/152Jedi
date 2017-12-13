@@ -1,6 +1,6 @@
 package expression
-import context.Environment
-import value.Value
+import context.{Environment, UndefinedException}
+import value.{Notification, Value}
 
 /**
   * Created by robingoh on 11/27/17.
@@ -8,5 +8,10 @@ import value.Value
 case class Assignment(val variable: Identifier,
                       val update: Expression)
   extends SpecialForm {
-  def execute(env: Environment): Value = ???
+  def execute(env: Environment): Value = {
+    if (!env.contains(variable))
+      throw new UndefinedException(variable)
+    env.put(variable, update.execute(env))
+    Notification.OK
+  }
 }

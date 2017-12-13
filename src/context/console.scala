@@ -124,3 +124,137 @@ object console {
       }
   }
 }
+
+// test output with Jedi3Parsers
+/*
+-> def count = var(0)
+OK
+-> count
+Variable(0)
+-> [count]
+Variable(0)
+-> def incCount = lambda() count = [count] + 1
+OK
+-> incCount()
+context.UndefinedException: Undefined identifier: count
+-> incCount()
+context.UndefinedException: Undefined identifier: count
+-> count
+Variable(0)
+-> while ([count] < 10) { write("calling incCount"); incCount() }
+context.TypeException: Inputs to < must be numbers or texts
+-> count
+Variable(0)
+-> def tri = lambda (n) { def result = var(0); def count = var(0); while([count] < n + 1) { result = [result] + [count]; count = [count] + 1}; [result]}
+OK
+-> tri(5)
+context.TypeException: Inputs to < must be numbers or texts
+-> tri(6)
+context.TypeException: Inputs to < must be numbers or texts
+-> def scores = store(85, 23, 99, 56)
+OK
+-> scores
+ 85 23 99 56{ArrayBuffer((), (), (), ())}
+-> get(1, scores)
+DONE
+-> put(60, 2, scores)
+DONE
+-> scores
+ 85 23 60 99 56{ArrayBuffer((), (), (), (), ())}
+-> def scores2 = map(lambda(x) x + 1, scores)
+OK
+-> scores2
+DONE
+-> def scores3 = filter(lambda(x) 70 < x, scores2)
+context.TypeException: expected signature: filter(f: Closure, s: Store)
+-> scores3
+java.lang.NullPointerException
+bye
+ */
+
+// test output with Jedi4Parsers
+/*
+-> def acct1 = object{def bal = var(100.0); def deposit = lambda(amt) bal = [bal] + amt}
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `{' found
+line # = 1
+column # = 19
+token = {
+-> acct1.bal
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `.' found
+line # = 1
+column # = 6
+token = .
+-> acct1.deposit(67.0)
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `.' found
+line # = 1
+column # = 6
+token = .
+-> acct1.bal
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `.' found
+line # = 1
+column # = 6
+token = .
+-> def acct2 = object {def withdraw = lambda(amt) bal = [bal] - amt} extends acct1
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `{' found
+line # = 1
+column # = 20
+token = {
+-> acct2.bal
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `.' found
+line # = 1
+column # = 6
+token = .
+-> acct2.withdraw(19)
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `.' found
+line # = 1
+column # = 6
+token = .
+-> acct2.bal
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `.' found
+line # = 1
+column # = 6
+token = .
+-> def makeAccount = lambda(initAmount) object{def bal = var(initAmount); def deposit = lambda(amt) bal = [bal] + amt; def withdraw = lambda(amt) bal = [bal] - amt}
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `{' found
+line # = 1
+column # = 44
+token = {
+-> def savings = makeAccount(50.2)
+context.UndefinedException: Undefined identifier: makeAccount
+-> def checking = makeAccount(93.2)
+context.UndefinedException: Undefined identifier: makeAccount
+-> savings.withdraw(25)
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `.' found
+line # = 1
+column # = 8
+token = .
+-> checking.deposit(25)
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `.' found
+line # = 1
+column # = 9
+token = .
+-> checking.bal
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `.' found
+line # = 1
+column # = 9
+token = .
+-> savings.bal
+context.SyntaxException: Syntax error
+string matching regex `\z' expected but `.' found
+line # = 1
+column # = 8
+token = .
+bye
+ */

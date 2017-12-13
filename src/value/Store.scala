@@ -1,5 +1,7 @@
 package value
 
+import context.TypeException
+
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -33,19 +35,24 @@ class Store(private var elems:ArrayBuffer[Value] = ArrayBuffer[Value]()) extends
   def size: Integer = Integer(elems.size)
 
   // returns "{e0 e1 e2 ...}"
-  override def toString = elems.toString
+  override def toString = "{" + elems.map((v: Value)=>print(s" $v")) + "}"
 
   // map and filter return new Store object
   // but not modifying this object
   // returns container containing the elements of this transformed by trans
-  def map(transform: Closure): Store = {
-    new Store(elems.map((v:Value)=> transform(List(v))))
-  }
+  def map(transform: Closure): Store =
+    new Store(elems.map((v: Value)=> transform(List(v))))
+
   // returns container containing the elements of this that passed test
-  def filter(test: Closure): Store = {???}
+  def filter(test: Closure): Store = {
+    if (!test(List()).isInstanceOf[Boole])
+      throw new TypeException
+    new Store(elems.filter((v: Value)=>test.apply(List(v)).asInstanceOf[Boole].value))
+  }
 }
 
-/*
+
+/* In class study notes
 def abc {???} procedure when it's void
 def abc = {???} multi-expression
 def abc = ??? single

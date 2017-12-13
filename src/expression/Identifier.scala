@@ -20,14 +20,22 @@ import context.Environment
 //}
 
 // Jedi 2
-case class Identifier(val name: String) extends Expression {
-  override def toString = name
-  def execute(env: Environment) = env(this)
-}
+//case class Identifier(val name: String) extends Expression {
+//  override def toString = name
+//  def execute(env: Environment) = env(this)
+//}
 
+// Jedi 3
 case class Identifier(val name: String,
                       val names: List[String] = Nil)
-extends  Expression {
+  extends Expression {
   override def toString = name
-  def execute(env: Environment) = env(this)
+  def execute(env: Environment) = {
+    if (names != Nil) {
+      for (name <- names) {
+        env.put(Identifier(name), env(Identifier(name)))
+      }
+    }
+    env(this)
+  }
 }

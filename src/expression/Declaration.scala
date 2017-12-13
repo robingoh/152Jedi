@@ -1,5 +1,5 @@
 package expression
-import context.Environment
+import context.{Environment, JediException}
 import value.{Notification, Value}
 
 /**
@@ -11,13 +11,11 @@ case class Declaration(val id: Identifier, val exp: Expression) extends SpecialF
 
     // 11/27
     // does not allow redefinition of variable in hash table
-    try {
-      env.put(id, value)
-      Notification.OK
-    } catch {
-      case  =>
+    if (env.contains(id))
+      throw new JediException("does not allow redefinition of variable")
+    env.put(id, value)
+    Notification.OK
 
-    }
     /*
     1. value = exp.execute
     2. env.put(id,value)
